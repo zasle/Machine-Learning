@@ -2,7 +2,6 @@
 import pandas as pd 
 from sklearn import metrics
 import numpy as np
-from sklearn.model_selection import train_test_split
 data_raw = pd.read_csv('data_2_0.txt',index_col = 0)
 #data_df = data_raw.apply(preprocessing.LabelEncoder().fit_transform)
 data_df = data_raw
@@ -30,7 +29,7 @@ class decision_tree():
     def create_tree(self,dataset,optional_feature_names,use_round = True):
         label = dataset.iloc[:,-1]
         if len(dataset)==0:
-            return '未知'
+            return '是'
         if len(label.value_counts())==1:
             # 若全为同一标签，则返回
             return label.iloc[0]
@@ -90,20 +89,33 @@ class decision_tree():
         if not y is None:
             accuracy = metrics.accuracy_score(y, pre_labels)
         return pre_labels,accuracy
-#%%
+#%%  模型使用
+        
 decision_tree = decision_tree()
 decision_tree.fit(data_df.iloc[:,:-1] ,data_df.iloc[:,-1])
-complete_modle = decision_tree.modle
+complete_modle_tree = decision_tree.modle
 print("===========================================\n")
-print("使用 全部 数据训练:\n得到模型为:\n{:}\n".format(complete_modle))
-print("===========================================\n")
-print("使用 70% 数据进行训练:\n")
-X_train,X_test,y_train,y_test = train_test_split( data_df.iloc[:,:-1] ,
-                   data_df.iloc[:,-1],test_size=0.3, random_state = 1234)
-decision_tree.fit(x= X_train, y = y_train)
-part_modle = decision_tree.modle
-acc_train = decision_tree.accuracy
-_,acc_test = decision_tree.predicte(x= X_test, y = y_test)
-print("训练集准确率: {0:.3f}  测试准确率:{1:.3f}".format( acc_train,acc_test))
-print("模型为:\n{:}".format(part_modle))
+print("使用全部数据训练:\n得到模型为:\n{:}\n".format(complete_modle_tree))
+#%%  绘制决策树
 
+import treePlotter
+#[treePlotter] Source ：https://github.com/WordZzzz/ML/blob/master/Ch03/treePlotter.py
+fig = treePlotter.createPlot(complete_modle_tree)
+fig.savefig("tree.png")
+
+
+
+
+#%%  模型实际使用测试
+#from sklearn.model_selection import train_test_split
+#print("===========================================\n")
+#print("使用 70% 数据进行训练:\n")
+#X_train,X_test,y_train,y_test = train_test_split( data_df.iloc[:,:-1] ,
+#                   data_df.iloc[:,-1],test_size=0.3, random_state = 1234)
+#decision_tree.fit(x= X_train, y = y_train)
+#trainTest_modle_tree = decision_tree.modle
+#acc_train = decision_tree.accuracy
+#_,acc_test = decision_tree.predicte(x= X_test, y = y_test)
+#print("训练集准确率: {0:.3f}  测试准确率:{1:.3f}".format( acc_train,acc_test))
+#print("模型为:\n{:}".format(trainTest_modle_tree))
+#treePlotter.createPlot(trainTest_modle_tree)
