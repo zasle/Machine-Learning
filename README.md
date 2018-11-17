@@ -1,2 +1,4 @@
-# Machine-Learning
-一些代码实现
+# Machine-Learning-Notes
+---
+
+一些机器学习相关的代码实现以及案例
